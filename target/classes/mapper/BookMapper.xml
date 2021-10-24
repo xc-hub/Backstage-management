@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xucan.mapper.BookMapper">
+<!--    查询所有书籍-->
+    <select id="FindBookPage" resultType="com.xucan.domain.BookInfo">
+        select  * from book_info where book_name LIKE '%${book_name}%'
+    </select>
+<!--    插入书籍-->
+    <insert id="insertBook">
+        insert into book_info value (null,#{book_isbn},#{book_category},#{book_name},#{book_image},#{book_author},#{book_price},#{book_press},#{book_press_time},#{book_press_num},0)
+    </insert>
+<!--    根据book_id查询书籍-->
+    <select id="findBookById" resultType="com.xucan.domain.BookInfo">
+        select * from book_info where book_id = #{book_id}
+    </select>
+<!--    修改书籍-->
+    <update id="updateBook">
+        update book_info set book_isbn=#{book_isbn},book_category=#{book_category},book_name=#{book_name},book_image=#{book_image},book_author=#{book_author},book_price=#{book_price},book_press=#{book_press},book_press_time=#{book_press_time},book_press_num=#{book_press_num} where book_id=#{book_id}
+    </update>
+<!--    根据book_id删除书籍-->
+    <delete id="deleteBook">
+        delete from book_info where book_id=#{book_id}
+    </delete>
+<!--    直接查询所有书籍-->
+    <select id="findAll" resultType="com.xucan.domain.BookInfo">
+        select * from book_info where book_name LIKE '%${book_name}%'
+    </select>
+<!--    根据类别查询书籍-->
+    <select id="findByCategory" resultType="com.xucan.domain.BookInfo">
+        select * from book_info where book_category=#{book_category}
+    </select>
+</mapper>
+

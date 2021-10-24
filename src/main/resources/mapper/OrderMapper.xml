@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xucan.mapper.OrderMapper">
+    <!--    添加订单-->
+    <insert id="insertOrder">
+        insert into order1 value (#{oid},#{open_id},#{price},#{create_time},#{status},#{count})
+    </insert>
+    <!--    添加订单详情-->
+    <insert id="insertOrderDetail" parameterType="com.xucan.domain.OrderDetail">
+        insert into order_detail value (null,#{oid},#{book_id},#{count},#{book_price},#{book_image})
+    </insert>
+    <!--    更新订单状态-->
+    <update id="updateOrderStatus" parameterType="java.lang.String">
+        update order1 set status="已支付" where oid=#{oid}
+    </update>
+    <update id="updateOrderDetail">
+        update order_detail set book_id=#{book_id},book_price=#{book_price},count=#{count} where id=#{id}
+    </update>
+    <delete id="deletedOrder">
+        delete from order1 where oid=#{oid}
+    </delete>
+    <delete id="deleteOrderDetail">
+        delete from order_detail where oid=#{oid}
+    </delete>
+    <resultMap id="orderList" type="com.xucan.domain.Order" autoMapping="false">
+        <id column="oid" property="oid"></id>
+        <result column="open_id" property="open_id"></result>
+        <result column="price" property="price"></result>
+        <result column="create_time" property="create_time"></result>
+        <result column="status" property="status"></result>
+        <result column="count" property="count"></result>
+        <collection property="children" ofType="com.xucan.domain.OrderDetail">
+            <id property="id" column="id"></id>
+            <result property="oid" column="oid"></result>
+            <result property="book_id" column="book_id"></result>
+            <result property="count" column="count1"></result>
+            <result property="book_image" column="book_image"></result>
+            <result property="book_price" column="book_price"></result>
+        </collection>
+    </resultMap>
+    <select id="findAllOrder" resultMap="orderList" parameterType="java.lang.String">
+        SELECT od.oid ,o.open_id,o.create_time, o.price,o.status,o.count as count,od.book_id,od.count as count1 ,od.book_price,od.book_image,od.id
+        FROM order_detail od ,order1 o
+        WHERE od.oid  IN (SELECT oid FROM order1 WHERE open_id = #{openid})
+        ORDER BY oid
+    </select>
+
+
+    <resultMap id="orderList1" type="com.xucan.domain.Order" autoMapping="false">
+        <id column="oid" property="oid"></id>
+        <result column="open_id" property="open_id"></result>
+        <result column="price" property="price"></result>
+        <result column="create_time" property="create_time"></result>
+        <result column="status" property="status"></result>
+        <result column="count" property="count"></result>
+        <collection property="children"
+                    ofType="com.xucan.domain.OrderDetail"
+                    select="findOrderDetailByOid"
+                    column="oid">
+        </collection>
+    </resultMap>
+    <select id="findOrderPage" resultMap="orderList1">
+        SELECT *
+        FROM order1
+        WHERE oid LIKE '%${oid}%'
+    </select>
+    <select id="findOrderDetailByOid" resultType="com.xucan.domain.OrderDetail">
+        select *
+        from order_detail
+        where oid=#{oid}
+    </select>
+    <!--    <select id="findAllOrderDetailByOid" resultType="com.xucan.domain.OrderDetail">-->
+<!--        select * from order_detail where oid=#{oid}-->
+<!--    </select>-->
+</mapper>
+

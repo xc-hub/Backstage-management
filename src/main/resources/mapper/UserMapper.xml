@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xucan.mapper.UserMapper">
+
+    <select id="findAll" resultType="com.xucan.domain.User">
+        select  * from user
+    </select>
+    <select id="FindUserPage" resultType="com.xucan.domain.User">
+        select  * from user where uname LIKE '%${uname}%'
+    </select>
+
+    <insert id="insertUser">
+        insert into user values (null,#{uname}, #{password},null, #{tel}, #{email},null)
+    </insert>
+    <delete id="deleteUser">
+        delete from user where uid = #{uid}
+    </delete>
+    <update id="updateUser">
+        update user set email=#{email} ,tel=#{tel}where uid = #{uid}
+    </update>
+    <select id="login" resultType="com.xucan.domain.User">
+        select * from user where uname=#{uname} and password=#{password}and character1 in ('管理员','超级管理员')
+    </select>
+</mapper>
